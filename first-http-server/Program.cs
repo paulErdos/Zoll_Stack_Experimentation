@@ -21,15 +21,23 @@ namespace HttpListenerExample
         public static string pageData =
             "<!DOCTYPE>" +
             "<html>" +
-            "  <head>" +
-            "    <title>HttpListener Example</title>" +
-            "  </head>" +
-            "  <body>" +
-            "    <p>Page Views: {0}</p>" +
-            "    <form method=\"post\" action=\"shutdown\">" +
-            "      <input type=\"submit\" value=\"Shutdown\" {1}>" +
-            "    </form>" +
-            "  </body>" +
+            "   <head>" +
+            "       <title>HttpListener Example</title>" +
+            "   </head>" +
+            "   <body>" +
+            "       <p>Page Views: {0}</p>" +
+            "       <form method=\"post\" action=\"shutdown\">" +
+            "           <input type=\"submit\" value=\"Shutdown\" {1}>" +
+            "       </form>" +
+            "       <form method=\"post\" action=\"equitySelection\">" +
+            "              <p>Compare Vanguard S&P 500 ETF VOO to:</p>" +
+            "              <input type=\"radio\" id=\"qqq\" name=\"ticker\" value=\"qqq\">" +
+            "              <label for=\"qqq\">Nasdaq ETF QQQ</label><br>" +
+            "              <input type=\"radio\" id=\"intu\" name=\"age\" value=\"intu\">" +
+            "              <label for=\"intu\">Intuit, Inc.</label><br>  " +
+            "              <input type=\"submit\" value=\"Submit\">" +
+            "            </form>" +
+            "   </body>" +
             "</html>";
 
 
