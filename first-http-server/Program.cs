@@ -8,6 +8,8 @@ using System.Text;
 using System.Net;
 using System.Threading.Tasks;
 
+using System.Data.SqlClient;
+
 namespace HttpListenerExample
 {
     class HttpServer
@@ -16,7 +18,7 @@ namespace HttpListenerExample
         public static string url = "http://localhost:8000/";
         public static int pageViews = 0;
         public static int requestCount = 0;
-        public static string pageData = 
+        public static string pageData =
             "<!DOCTYPE>" +
             "<html>" +
             "  <head>" +
@@ -31,8 +33,13 @@ namespace HttpListenerExample
             "</html>";
 
 
-        public static async Task HandleIncomingConnections()
+        public static async Task HandleIncomingConnections(SqlConnection connection)
         {
+            if (connection is null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
             bool runServer = true;
 
             // While a user hasn't visited the `shutdown` url, keep on handling requests
@@ -77,17 +84,38 @@ namespace HttpListenerExample
             }
         }
 
+        private static SqlConnection attemptToConnect()
+        {
+            string connectionString = "Data Source=0.0.0.0,1433;Initial Catalog=Equities;User ID=SA;Password=Aa345678";
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            try
+            {
+                Console.WriteLine("Attempting to open connection...");
+                connection.Open();
+                Console.WriteLine("Successfully opened connection!");
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Failed to open connection to database: " + e.Message);
+            }
+
+            return connection;
+        }
 
         public static void Main(string[] args)
         {
+            // Get a connection to the db
+            SqlConnection connection = attemptToConnect();
+
             // Create a Http server and start listening for incoming connections
             listener = new HttpListener();
             listener.Prefixes.Add(url);
             listener.Start();
             Console.WriteLine("Listening for connections on {0}", url);
 
-            // Handle requests
-            Task listenTask = HandleIncomingConnections();
+            // Handle requests, passing in db connection
+            Task listenTask = HandleIncomingConnections(connection);
             listenTask.GetAwaiter().GetResult();
 
             // Close the listener
