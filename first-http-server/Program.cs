@@ -94,7 +94,7 @@ namespace HttpListenerExample
 
         private static SqlConnection attemptToConnect()
         {
-            string connectionString = "Data Source=0.0.0.0,1433;Initial Catalog=Equities;User ID=SA;Password=Aa345678";
+            string connectionString = "Data Source=127.0.0.1,1433;Initial Catalog=Equities;User ID=SA;Password=Aa345678";
             SqlConnection connection = new SqlConnection(connectionString);
 
             try
