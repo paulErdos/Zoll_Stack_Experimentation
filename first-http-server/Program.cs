@@ -3,10 +3,12 @@
 // License:   Unlicense (http://unlicense.org/)
 
 using System;
+using System.Data;
 using System.IO;
 using System.Text;
 using System.Net;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using System.Data.SqlClient;
 
@@ -47,6 +49,8 @@ namespace HttpListenerExample
             {
                 throw new ArgumentNullException(nameof(connection));
             }
+
+            getSpy(connection);
 
             bool runServer = true;
 
@@ -89,6 +93,31 @@ namespace HttpListenerExample
                 // Write out to the response stream (asynchronously), then close it
                 await resp.OutputStream.WriteAsync(data, 0, data.Length);
                 resp.Close();
+            }
+        }
+
+        private static void getSpy(SqlConnection connection)
+        {
+            string queryString = "select * from spy";
+
+            SqlCommand command = new SqlCommand(queryString, connection);
+            using(SqlDataReader reader = command.ExecuteReader())
+            {
+                Console.WriteLine(reader.FieldCount);
+                List<Object[]> rows = new List<object[]>();
+                while(reader.Read())
+                {
+                    Object[] row = new object[reader.FieldCount];
+                    reader.GetValues(row);
+
+                    rows.Add(row);
+                }
+
+                foreach(Object[] thisRow in rows)
+                {
+                    Console.WriteLine(String.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}",
+                        thisRow[0], thisRow[1], thisRow[2], thisRow[3], thisRow[4], thisRow[5], thisRow[6]));
+                }
             }
         }
 
