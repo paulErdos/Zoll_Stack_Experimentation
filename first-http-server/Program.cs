@@ -50,7 +50,8 @@ namespace HttpListenerExample
                 throw new ArgumentNullException(nameof(connection));
             }
 
-            getSpy(connection);
+            string queryString = "select * from spy";
+            getData(connection, queryString);
 
             bool runServer = true;
 
@@ -96,29 +97,36 @@ namespace HttpListenerExample
             }
         }
 
-        private static void getSpy(SqlConnection connection)
+        private static List<Object[]> getData(SqlConnection connection, string queryString)
         {
-            string queryString = "select * from spy";
-
+            List<Object[]> rows = new List<object[]>();
             SqlCommand command = new SqlCommand(queryString, connection);
-            using(SqlDataReader reader = command.ExecuteReader())
+            try
             {
-                Console.WriteLine(reader.FieldCount);
-                List<Object[]> rows = new List<object[]>();
-                while(reader.Read())
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    Object[] row = new object[reader.FieldCount];
-                    reader.GetValues(row);
+                    while (reader.Read())
+                    {
+                        Object[] row = new object[reader.FieldCount];
+                        reader.GetValues(row);
 
-                    rows.Add(row);
-                }
+                        rows.Add(row);
+                    }
 
-                foreach(Object[] thisRow in rows)
-                {
-                    Console.WriteLine(String.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}",
-                        thisRow[0], thisRow[1], thisRow[2], thisRow[3], thisRow[4], thisRow[5], thisRow[6]));
+                    /*
+                    foreach(Object[] thisRow in rows)
+                    {
+                        Console.WriteLine(String.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}",
+                            thisRow[0], thisRow[1], thisRow[2], thisRow[3], thisRow[4], thisRow[5], thisRow[6]));
+                    }
+                    */
                 }
             }
+            catch(Exception e)
+            {
+                Console.WriteLine("Ya dun goofed the query you n00b" + e.Message);
+            }
+            return rows;
         }
 
         private static SqlConnection attemptToConnect()
