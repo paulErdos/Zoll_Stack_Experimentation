@@ -51,7 +51,8 @@ namespace HttpListenerExample
             }
 
             string queryString = "select * from spy";
-            getData(connection, queryString);
+            List<Object[]> theData = getData(connection, queryString);
+            string theJson = makeJson(theData);
 
             bool runServer = true;
 
@@ -126,7 +127,39 @@ namespace HttpListenerExample
             {
                 Console.WriteLine("Ya dun goofed the query you n00b" + e.Message);
             }
+
             return rows;
+        }
+
+        private static string makeJson(List<Object[]> data)
+        {
+            /*
+             * Manually for learning's sake
+             */
+
+            string the_json = "{\n";
+
+            // Key <-- Date <-- First field
+            // And let's just use the open price for now
+            for(int i = 0; i < data.Count - 1; i++)
+            {
+                string the_date = (string)data[i][0]; // This is a string already
+                double the_open = (double)data[i][1]; // This is a Double
+
+                the_json += "\t\"" + the_date + "\": " +
+                    "{\"open\": \"" + Convert.ToString(the_open) + "\"" + "},\n";
+
+            }
+
+            // Last row without trailing comma
+            string final_date = (string)data[data.Count - 1][0];
+            double final_open = (double)data[data.Count - 1][1];
+            the_json += "\t\"" + final_date + "\": " +
+                "{\"open\": \"" + Convert.ToString(final_open) + "\"" + "}\n";
+
+            the_json += "}";
+
+            return the_json;
         }
 
         private static SqlConnection attemptToConnect()
