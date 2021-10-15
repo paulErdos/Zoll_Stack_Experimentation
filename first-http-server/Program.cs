@@ -1,15 +1,10 @@
-﻿// Filename:  HttpServer.cs        
-// Author:    Benjamin N. Summerton <define-private-public>        
-// License:   Unlicense (http://unlicense.org/)
-
-using System;
+﻿using System;
 using System.Data;
 using System.IO;
 using System.Text;
 using System.Net;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-
 using System.Data.SqlClient;
 
 namespace HttpListenerExample
@@ -25,6 +20,7 @@ namespace HttpListenerExample
             "<html>" +
             "   <head>" +
             "       <title>HttpListener Example</title>" +
+            "       <script type=\"text/javascript\" src=\"./testscript.js\"></script> " +
             "   </head>" +
             "   <body>" +
             "       <p>Page Views: {0}</p>" +
@@ -39,6 +35,7 @@ namespace HttpListenerExample
             "              <label for=\"intu\">Intuit, Inc.</label><br>  " +
             "              <input type=\"submit\" value=\"Submit\">" +
             "            </form>" +
+            "            {2}" +
             "   </body>" +
             "</html>";
 
@@ -87,7 +84,7 @@ namespace HttpListenerExample
 
                 // Write the response info
                 string disableSubmit = !runServer ? "disabled" : "";
-                byte[] data = Encoding.UTF8.GetBytes(String.Format(pageData, pageViews, disableSubmit));
+                byte[] data = Encoding.UTF8.GetBytes(String.Format(pageData, pageViews, disableSubmit, theJson));
                 resp.ContentType = "text/html";
                 resp.ContentEncoding = Encoding.UTF8;
                 resp.ContentLength64 = data.LongLength;
